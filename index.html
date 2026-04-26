@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IUA RxCentral - Pharmacy Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#08090f;
+  --bg2:#0d0e1c;
+  --surf:#131425;
+  --surf2:#1c1e35;
+  --surf3:#242642;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.12);
+  --text:#eeeeff;
+  --muted:#7b7d9d;
+  --muted2:#555775;
+  --accent:#7c3aed;
+  --accent2:#a78bfa;
+  --accent3:#c4b5fd;
+  --glow:rgba(124,58,237,0.35);
+  --glow2:rgba(124,58,237,0.15);
+  --blue:#3b82f6;
+  --blue-glow:rgba(59,130,246,0.3);
+  --ok:#10b981;
+  --ok-glow:rgba(16,185,129,0.3);
+  --err:#ef4444;
+  --err-glow:rgba(239,68,68,0.3);
+  --warn:#f59e0b;
+  --warn-glow:rgba(245,158,11,0.25);
+  --nav-bg:rgba(8,9,15,0.88);
+  --head:'Space Grotesk',sans-serif;
+  --body:'Inter',sans-serif;
+  --r:16px;
+  --rs:10px;
+  --t:0.22s cubic-bezier(.4,0,.2,1);
+}
+
+[data-theme=light]{
+  --bg:#f2f2fb;
+  --bg2:#eaeaf5;
+  --surf:#ffffff;
+  --surf2:#f5f5fc;
+  --surf3:#edeef8;
+  --border:rgba(0,0,0,0.07);
+  --border2:rgba(0,0,0,0.12);
+  --text:#16172b;
+  --muted:#6b6d8a;
+  --muted2:#9596b5;
+  --glow:rgba(124,58,237,0.18);
+  --glow2:rgba(124,58,237,0.08);
+  --nav-bg:rgba(242,242,251,0.88);
+  --blue-glow:rgba(59,130,246,0.15);
+  --ok-glow:rgba(16,185,129,0.15);
+  --err-glow:rgba(239,68,68,0.15);
+  --warn-glow:rgba(245,158,11,0.12);
+}
+
+html,body{height:100%;font-family:var(--body);background:var(--bg);color:var(--text);overflow-x:hidden;transition:background var(--t),color var(--t)}
+
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    radial-gradient(ellipse 65% 55% at 12% 12%,rgba(124,58,237,0.1) 0%,transparent 70%),
+    radial-gradient(ellipse 55% 45% at 88% 82%,rgba(59,130,246,0.08) 0%,transparent 70%),
+    radial-gradient(ellipse 45% 45% at 50% 50%,rgba(167,139,250,0.03) 0%,transparent 70%),
+    linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);
+  background-size:100% 100%,100% 100%,100% 100%,44px 44px,44px 44px;
+}
+[data-theme=light] body::before{
+  background-image:
+    radial-gradient(ellipse 65% 55% at 12% 12%,rgba(124,58,237,0.07) 0%,transparent 70%),
+    radial-gradient(ellipse 55% 45% at 88% 82%,rgba(59,130,246,0.05) 0%,transparent 70%),
+    radial-gradient(ellipse 45% 45% at 50% 50%,rgba(167,139,250,0.03) 0%,transparent 70%),
+    linear-gradient(rgba(0,0,0,0.036) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,0,0,0.036) 1px,transparent 1px);
+  background-size:100% 100%,100% 100%,100% 100%,44px 44px,44px 44px;
+}
+
+#app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+
+/* ── Nav ── */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:var(--nav-bg);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  padding:0 28px;display:flex;align-items:center;gap:8px;height:62px;
+  transition:background var(--t);
+}
+.logo{font-family:var(--head);font-size:1.1rem;font-weight:800;letter-spacing:-0.02em;
+  background:linear-gradient(135deg,#ec4899,#06b6d4);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  cursor:pointer;margin-right:12px;white-space:nowrap;user-select:none;flex-shrink:0}
+.logo span{opacity:.65;font-weight:400}
+.nav-links{display:flex;gap:2px;flex:1;min-width:0}
+.nav-btn{background:none;border:none;color:var(--muted);font-family:var(--body);
+  font-size:.875rem;font-weight:500;padding:7px 13px;border-radius:var(--rs);
+  cursor:pointer;transition:var(--t);white-space:nowrap;flex-shrink:0}
+.nav-btn:hover{color:var(--text);background:var(--surf2)}
+.nav-btn.active{color:var(--accent2);background:rgba(124,58,237,.1)}
+.nav-right{display:flex;align-items:center;gap:10px;margin-left:auto;flex-shrink:0}
+.admin-btn{background:rgba(236,72,153,.1);border:1px solid rgba(236,72,153,.25);
+  color:#ec4899;padding:7px 13px;border-radius:var(--rs);cursor:pointer;
+  font-family:var(--body);font-size:.875rem;font-weight:600;transition:var(--t);flex-shrink:0}
+.admin-btn:hover{background:rgba(236,72,153,.2);box-shadow:0 0 12px rgba(236,72,153,.3)}
+.theme-toggle{background:var(--surf2);border:1px solid var(--border2);
+  color:var(--text);width:38px;height:38px;border-radius:50%;cursor:pointer;
+  font-size:1rem;display:flex;align-items:center;justify-content:center;
+  transition:var(--t);flex-shrink:0}
+.theme-toggle:hover{border-color:var(--accent2);box-shadow:0 0 16px var(--glow)}
+
+/* ── Main ── */
+main{padding:36px 28px;max-width:1140px;margin:0 auto;width:100%;flex:1}
+
+/* ── Views ── */
+.view{display:none}
+.view.active{display:block;animation:fadeUp .28s cubic-bezier(.4,0,.2,1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Typography ── */
+h1{font-family:var(--head);font-size:2rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px;line-height:1.2}
+h2{font-family:var(--head);font-size:1.35rem;font-weight:700;letter-spacing:-0.01em}
+h3{font-family:var(--head);font-size:1.05rem;font-weight:600}
+p{color:var(--muted);line-height:1.65;font-size:.9rem}
+code{font-family:'Fira Code','Consolas',monospace;font-size:.82rem;
+  background:var(--surf2);padding:2px 7px;border-radius:5px;color:var(--accent2)}
+
+/* ── Card surfaces ── */
+.card{background:var(--surf);border:1px solid var(--border);border-radius:var(--r);padding:24px;transition:border-color var(--t)}
+
+/* ── Grid ── */
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
+.g3{grid-template-columns:repeat(auto-fill,minmax(380px,1fr))}
+
+/* ── Stats row ── */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:28px}
+.stat-box{background:var(--surf);border:1px solid var(--border);border-radius:var(--r);
+  padding:20px 16px;text-align:center;transition:var(--t);position:relative;overflow:hidden;cursor:default}
+.stat-box::after{content:'';position:absolute;inset:0;opacity:0;transition:var(--t);
+  background:radial-gradient(ellipse at 50% 110%,var(--glow2),transparent 70%)}
+.stat-box:hover::after{opacity:1}
+.stat-val{font-family:var(--head);font-size:2.1rem;font-weight:800;line-height:1.15;
+  background:linear-gradient(135deg,var(--accent2),#60a5fa);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-lbl{font-size:.7rem;color:var(--muted);margin-top:5px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.07em}
+
+/* ── File card ── */
+.file-card{background:var(--surf);border:1px solid var(--border);border-radius:var(--r);
+  padding:22px;transition:var(--t);position:relative;overflow:hidden;display:flex;flex-direction:column}
+.file-card::before{content:'';position:absolute;top:-55px;right:-55px;
+  width:155px;height:155px;border-radius:50%;background:var(--dc,#06b6d4);
+  opacity:.07;transition:var(--t);pointer-events:none}
+.file-card:hover{transform:translateY(-3px);border-color:rgba(124,58,237,.3);
+  box-shadow:0 14px 50px rgba(0,0,0,.2)}
+.file-card:hover::before{opacity:.2;transform:scale(1.3)}
+.file-name{font-family:var(--head);font-size:1.05rem;font-weight:700;
+  margin-bottom:8px;display:flex;align-items:center;gap:8px;word-break:break-word}
+.file-meta{font-size:.8rem;color:var(--muted);margin-bottom:16px;line-height:1.6;flex-grow:1}
+.file-btns{display:flex;gap:8px;flex-wrap:wrap}
+.file-icon{font-size:1.8rem;line-height:1;flex-shrink:0}
+
+.new-file-card{background:transparent;border:2px dashed var(--border2);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  gap:10px;min-height:170px;cursor:pointer;transition:var(--t);color:var(--muted2);
+  border-radius:var(--r)}
+.new-file-card:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(124,58,237,.05)}
+.new-file-card .plus{font-size:2.4rem;font-weight:300;line-height:1;transition:transform var(--t)}
+.new-file-card:hover .plus{transform:scale(1.25)}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:var(--rs);
+  font-family:var(--body);font-size:.875rem;font-weight:600;cursor:pointer;border:none;
+  transition:var(--t);text-decoration:none;white-space:nowrap;line-height:1}
+.btn-primary{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;
+  box-shadow:0 4px 20px var(--glow)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(124,58,237,.55)}
+.btn-primary:active{transform:translateY(0)}
+.btn-secondary{background:var(--surf2);color:var(--text);border:1px solid var(--border2)}
+.btn-secondary:hover{background:var(--surf3)}
+.btn-outline{background:transparent;color:var(--accent2);border:1.5px solid rgba(167,139,250,.35)}
+.btn-outline:hover{background:rgba(124,58,237,.1);border-color:var(--accent2);box-shadow:0 0 18px var(--glow2)}
+.btn-danger{background:rgba(239,68,68,.12);color:var(--err);border:1px solid rgba(239,68,68,.22)}
+.btn-danger:hover{background:var(--err);color:#fff;box-shadow:0 0 14px var(--err-glow)}
+.btn-sm{padding:6px 14px;font-size:.8rem;border-radius:8px}
+.btn-lg{padding:14px 30px;font-size:1rem;border-radius:var(--r)}
+.btn-icon{padding:8px;width:36px;height:36px;justify-content:center;border-radius:9px}
+.w100{width:100%;justify-content:center}
+
+/* ── Chips ── */
+.chip{display:inline-flex;align-items:center;gap:4px;padding:3px 11px;
+  border-radius:20px;font-size:.73rem;font-weight:700;letter-spacing:.02em}
+.ch-def{background:var(--surf2);border:1px solid var(--border2);color:var(--muted)}
+.ch-pu{background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);color:var(--accent2)}
+.ch-ok{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);color:var(--ok)}
+.ch-warn{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);color:var(--warn)}
+.ch-err{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:var(--err)}
+.ch-blue{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#60a5fa}
+
+/* ── Form ── */
+.fg{margin-bottom:18px}
+label{display:block;font-size:.77rem;font-weight:700;color:var(--muted);
+  margin-bottom:7px;text-transform:uppercase;letter-spacing:.06em}
+input[type=text],input[type=password],textarea,select{width:100%;background:var(--surf2);border:1.5px solid var(--border);
+  border-radius:var(--rs);padding:11px 14px;color:var(--text);font-family:var(--body);
+  font-size:.9rem;transition:var(--t);outline:none}
+input[type=text]:focus,input[type=password]:focus,textarea:focus,select:focus{border-color:rgba(167,139,250,.6);box-shadow:0 0 0 3px rgba(124,58,237,.12)}
+textarea{resize:vertical;min-height:76px;line-height:1.55}
+
+/* ── Modal ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;
+  align-items:center;justify-content:center}
+.modal-overlay.active{display:flex}
+.modal{background:var(--surf);border:1px solid var(--border);border-radius:var(--r);
+  padding:32px;max-width:540px;width:90%;box-shadow:0 20px 80px rgba(0,0,0,.3);
+  animation:slideUp .3s ease;position:relative}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-head{font-family:var(--head);font-size:1.3rem;font-weight:800;margin-bottom:16px}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;
+  color:var(--muted);font-size:1.2rem;cursor:pointer;transition:var(--t)}
+.modal-close:hover{color:var(--text)}
+
+/* ── Toasts ── */
+.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:500;
+  display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--surf);border:1px solid var(--border2);border-radius:var(--r);
+  padding:13px 18px;font-size:.855rem;font-weight:500;
+  box-shadow:0 8px 32px rgba(0,0,0,.25);
+  display:flex;align-items:center;gap:9px;pointer-events:auto;
+  animation:slideL .22s ease;min-width:210px}
+.t-ok{border-color:rgba(16,185,129,.4)!important;box-shadow:0 4px 24px var(--ok-glow)!important}
+.t-err{border-color:rgba(239,68,68,.4)!important;box-shadow:0 4px 24px var(--err-glow)!important}
+.t-info{border-color:rgba(124,58,237,.35)!important;box-shadow:0 4px 24px var(--glow2)!important}
+@keyframes slideL{from{transform:translateX(24px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes slideR{to{transform:translateX(32px);opacity:0}}
+.dying{animation:slideR .2s ease forwards}
+
+/* ── Utility ── */
+.flex{display:flex}.aic{align-items:center}.jcb{justify-content:space-between}
+.jcc{justify-content:center}.g6{gap:6px}.g8{gap:8px}.g10{gap:10px}.g12{gap:12px}.g16{gap:16px}
+.mb6{margin-bottom:6px}.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}
+.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}.mb24{margin-bottom:24px}.mb32{margin-bottom:32px}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}
+.tc{text-align:center}.wrap{flex-wrap:wrap}
+.text-muted{color:var(--muted)}.ts{font-size:.85rem}.txs{font-size:.75rem}
+.fh{font-family:var(--head)}.fb{font-weight:700}.f8{font-weight:800}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--surf3);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--muted2)}
+
+/* ── Responsive ── */
+@media(max-width:680px){
+  nav{padding:0 14px;gap:6px}
+  main{padding:20px 16px}
+  h1{font-size:1.5rem}
+  .nav-btn:not(.active){display:none}
+  .nav-btn.active{display:flex}
+  .g2{grid-template-columns:1fr}
+  .g3{grid-template-columns:1fr}
+}
+
+/* ── Hero section ── */
+.hero{text-align:center;padding:60px 24px;background:
+  radial-gradient(ellipse at 50% 0%,rgba(124,58,237,.25),transparent 60%);
+  border-radius:var(--r);margin-bottom:40px;position:relative;overflow:hidden}
+.hero h1{font-size:2.8rem;margin-bottom:12px;background:linear-gradient(135deg,#ec4899,#06b6d4);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:1.1rem;color:var(--muted);margin-bottom:28px;max-width:600px;margin-left:auto;margin-right:auto}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* ── Section header ── */
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.section-head h2{margin:0}
+
+/* ── Report table ── */
+.report-table{width:100%;border-collapse:collapse;overflow-x:auto}
+.report-table thead{background:var(--surf2);border:1px solid var(--border)}
+.report-table th{padding:12px 14px;text-align:left;font-weight:700;font-size:.85rem;
+  color:var(--muted);text-transform:uppercase;letter-spacing:.05em;border-right:1px solid var(--border)}
+.report-table th:last-child{border-right:none}
+.report-table td{padding:12px 14px;border-bottom:1px solid var(--border);color:var(--text)}
+.report-table tbody tr:hover{background:var(--surf2)}
+.report-table .grade-excellent{color:var(--ok);font-weight:700}
+.report-table .grade-good{color:var(--blue);font-weight:700}
+.report-table .grade-average{color:var(--warn);font-weight:700}
+.report-table .grade-poor{color:var(--err);font-weight:700}
+
+.table-wrapper{overflow-x:auto;border:1px solid var(--border);border-radius:var(--r)}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ══ NAV ══ -->
+<nav>
+  <span class="logo" onclick="gv('home')">IUA RxCentral<span>Pharmacy</span></span>
+  <div class="nav-links">
+    <button class="nav-btn active" data-view="home" onclick="gv('home')">🏠 Home</button>
+    <button class="nav-btn" data-view="study" onclick="gv('study')">📚 Study</button>
+    <button class="nav-btn" data-view="lectures" onclick="gv('lectures')">🎓 Lectures</button>
+    <button class="nav-btn" data-view="resources" onclick="gv('resources')">📖 Resources</button>
+    <button class="nav-btn" data-view="reports" onclick="gv('reports')">📊 Reports</button>
+  </div>
+  <div class="nav-right">
+    <button class="admin-btn" onclick="openAdminLogin()" title="Admin Panel">⚙️ Admin</button>
+    <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Toggle theme">🌙</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ══ HOME ══ -->
+<div class="view active" id="view-home">
+  <div class="hero">
+    <h1>Welcome to IUA RxCentral 💊</h1>
+    <p class="hero-sub">Your complete pharmacy education hub. Study smarter, track progress, and access all your academic resources in one place.</p>
+    <div class="hero-btns">
+      <button class="btn btn-primary" onclick="gv('study')">📚 Start Studying</button>
+      <button class="btn btn-secondary" onclick="gv('lectures')">🎓 View Lectures</button>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-val" id="h-decks">0</div><div class="stat-lbl">Study Decks</div></div>
+    <div class="stat-box"><div class="stat-val" id="h-lectures">0</div><div class="stat-lbl">Lectures</div></div>
+    <div class="stat-box"><div class="stat-val" id="h-resources">0</div><div class="stat-lbl">Resources</div></div>
+    <div class="stat-box"><div class="stat-val" id="h-streak">0</div><div class="stat-lbl">Day Streak 🔥</div></div>
+  </div>
+
+  <div class="section-head">
+    <h2>Quick Access</h2>
+  </div>
+  <div class="grid g2" id="home-quick"></div>
+</div>
+
+<!-- ══ STUDY ══ -->
+<div class="view" id="view-study">
+  <div class="flex aic jcb mb24 wrap g12">
+    <div>
+      <h1>📚 Study Mode</h1>
+      <p>Create decks and test your knowledge with spaced repetition.</p>
+    </div>
+    <div class="flex g8 wrap">
+      <button class="btn btn-secondary" onclick="importStudyCSV()">📥 Import CSV</button>
+      <button class="btn btn-primary" onclick="newStudyDeck()">＋ New Deck</button>
+    </div>
+  </div>
+  <div class="grid g2" id="study-decks"></div>
+</div>
+
+<!-- ══ LECTURES ══ -->
+<div class="view" id="view-lectures">
+  <div class="flex aic jcb mb24 wrap g12">
+    <div>
+      <h1>🎓 Lectures</h1>
+      <p>Organized by academic year and subject.</p>
+    </div>
+    <button class="btn btn-primary" onclick="openAddLectureModal()">＋ Upload Lecture</button>
+  </div>
+
+  <div class="section-head">
+    <h2>Academic Year</h2>
+  </div>
+  <div id="lectures-years" class="flex g8 wrap mb24"></div>
+
+  <div id="lectures-content"></div>
+</div>
+
+<!-- ══ RESOURCES ══ -->
+<div class="view" id="view-resources">
+  <div class="flex aic jcb mb24 wrap g12">
+    <div>
+      <h1>📖 Resources</h1>
+      <p>Study notes, MCQ files, and learning materials.</p>
+    </div>
+    <button class="btn btn-primary" onclick="openAddResourceModal()">＋ Add Resource</button>
+  </div>
+
+  <div class="section-head">
+    <h2>Academic Year</h2>
+  </div>
+  <div id="resources-years" class="flex g8 wrap mb24"></div>
+
+  <div id="resources-content"></div>
+</div>
+
+<!-- ══ REPORTS ══ -->
+<div class="view" id="view-reports">
+  <div class="flex aic jcb mb24 wrap g12">
+    <div>
+      <h1>📊 Student Reports</h1>
+      <p>View and compare academic performance by year and subject.</p>
+    </div>
+    <button class="btn btn-primary" onclick="openImportReportModal()">📥 Import Scores</button>
+  </div>
+
+  <div class="section-head">
+    <h2>Academic Year</h2>
+  </div>
+  <div id="reports-years" class="flex g8 wrap mb24"></div>
+
+  <div id="reports-content"></div>
+</div>
+
+</main>
+
+<!-- ══ MODALS ══ -->
+
+<!-- Add Lecture Modal -->
+<div class="modal-overlay" id="lecture-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeLectureModal()">✕</button>
+    <div class="modal-head">Upload Lecture</div>
+    <div class="fg">
+      <label>Academic Year</label>
+      <select id="lecture-year">
+        <option value="">Select year...</option>
+        <option value="Year 1">Year 1</option>
+        <option value="Year 2">Year 2</option>
+        <option value="Year 3">Year 3</option>
+        <option value="Year 4">Year 4</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>Subject / Course</label>
+      <input type="text" id="lecture-subject" placeholder="e.g. Pharmacology">
+    </div>
+    <div class="fg">
+      <label>Lecture Title</label>
+      <input type="text" id="lecture-title" placeholder="e.g. Drug Interactions">
+    </div>
+    <div class="fg">
+      <label>Upload File (PDF, PPT, DOC)</label>
+      <input type="file" id="lecture-file" accept=".pdf,.ppt,.pptx,.doc,.docx">
+    </div>
+    <div class="flex g8" style="justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeLectureModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveLecture()">Upload</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Resource Modal -->
+<div class="modal-overlay" id="resource-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeResourceModal()">✕</button>
+    <div class="modal-head">Add Resource</div>
+    <div class="fg">
+      <label>Academic Year</label>
+      <select id="resource-year">
+        <option value="">Select year...</option>
+        <option value="Year 1">Year 1</option>
+        <option value="Year 2">Year 2</option>
+        <option value="Year 3">Year 3</option>
+        <option value="Year 4">Year 4</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>Resource Type</label>
+      <select id="resource-type">
+        <option value="">Select type...</option>
+        <option value="Study Notes">Study Notes</option>
+        <option value="MCQ File">MCQ File</option>
+        <option value="Reference">Reference Material</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>Subject / Course</label>
+      <input type="text" id="resource-subject" placeholder="e.g. Pharmacology">
+    </div>
+    <div class="fg">
+      <label>Resource Title</label>
+      <input type="text" id="resource-title" placeholder="e.g. Chapter 5 Study Notes">
+    </div>
+    <div class="fg">
+      <label>Upload File (PDF, DOC, DOCX)</label>
+      <input type="file" id="resource-file" accept=".pdf,.doc,.docx,.txt">
+    </div>
+    <div class="flex g8" style="justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeResourceModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveResource()">Add Resource</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import Report Modal -->
+<div class="modal-overlay" id="report-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeReportModal()">✕</button>
+    <div class="modal-head">Import Student Scores</div>
+    <div class="fg">
+      <label>Academic Year</label>
+      <select id="report-year">
+        <option value="">Select year...</option>
+        <option value="Year 1">Year 1</option>
+        <option value="Year 2">Year 2</option>
+        <option value="Year 3">Year 3</option>
+        <option value="Year 4">Year 4</option>
+      </select>
+    </div>
+    <div class="card mb16" style="margin-bottom:20px">
+      <h3 class="mb12">📋 CSV Format</h3>
+      <p class="mb12">Format: Student Name, Subject, Score (0-100)</p>
+      <div style="background:var(--surf2);border:1px solid var(--border);border-radius:var(--rs);padding:14px 16px;font-family:'Fira Code','Consolas',monospace;font-size:.78rem;color:var(--accent3);line-height:2.1;overflow-x:auto;white-space:nowrap">
+        Student Name, Subject, Score<br>
+        "Ahmed Ali","Pharmacology","85"<br>
+        "Fatima Hassan","Biochemistry","92"
+      </div>
+    </div>
+    <div class="fg">
+      <label>Upload CSV File</label>
+      <input type="file" id="report-file" accept=".csv">
+    </div>
+    <div class="flex g8" style="justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeReportModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveReport()">Import</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Login Modal -->
+<div class="modal-overlay" id="admin-login-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAdminLogin()">✕</button>
+    <div class="modal-head">Admin Login</div>
+    <div class="fg">
+      <label>Admin Password</label>
+      <input type="password" id="admin-password" placeholder="Enter password">
+    </div>
+    <div class="flex g8" style="justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeAdminLogin()">Cancel</button>
+      <button class="btn btn-primary" onclick="loginAdmin()">Login</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toasts"></div>
+</div>
+
+<script>
+// ════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════
+const KEY = 'rxcentral_v1';
+const ADMIN_PASS = 'pharmacy2025';
+let S = {
+  decks: [],
+  lectures: [],
+  resources: [],
+  reports: [],
+  streak: 0,
+  lastStudy: '',
+  studied: 0,
+  adminLoggedIn: false
+};
+
+// ════════════════════════════════════════════
+// STORAGE
+// ════════════════════════════════════════════
+function loadS() {
+  try { const d = localStorage.getItem(KEY); if(d) S = {...S,...JSON.parse(d)}; }
+  catch(e) {}
+}
+function saveS() { localStorage.setItem(KEY, JSON.stringify(S)); }
+
+// ════════════════════════════════════════════
+// UTILS
+// ════════════════════════════════════════════
+const uid = () => Math.random().toString(36).slice(2,9)+Date.now().toString(36);
+const today = () => new Date().toISOString().slice(0,10);
+const now = () => Date.now();
+const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+// ════════════════════════════════════════════
+// STREAK
+// ════════════════════════════════════════════
+function dayDiff(a,b){ return Math.floor((new Date(b)-new Date(a))/86400000); }
+
+function checkStreak() {
+  if (!S.lastStudy) return;
+  if (dayDiff(S.lastStudy, today()) > 1) { S.streak=0; saveS(); }
+}
+
+// ════════════════════════════════════════════
+// NAV
+// ════════════════════════════════════════════
+function gv(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn[data-view]').forEach(b => b.classList.remove('active'));
+  const v = document.getElementById('view-'+name);
+  if (v) v.classList.add('active');
+  const nb = document.querySelector(`.nav-btn[data-view="${name}"]`);
+  if (nb) nb.classList.add('active');
+  if (name==='home') renderHome();
+  if (name==='study') renderStudyDecks();
+  if (name==='lectures') renderLectures();
+  if (name==='resources') renderResources();
+  if (name==='reports') renderReports();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ════════════════════════════════════════════
+// THEME
+// ════════════════════════════════════════════
+function toggleTheme() {
+  const dark = document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme', dark?'light':'dark');
+  document.getElementById('theme-btn').textContent = dark?'☀️':'🌙';
+  localStorage.setItem('rxcentral_theme', dark?'light':'dark');
+}
+
+function loadTheme() {
+  const t = localStorage.getItem('rxcentral_theme')||'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('theme-btn').textContent = t==='dark'?'🌙':'☀️';
+}
+
+// ════════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════════
+function toast(msg, type='') {
+  const c = document.getElementById('toasts');
+  const t = document.createElement('div');
+  t.className = 'toast'+(type?' t-'+type:'');
+  const icons = {ok:'✅',err:'❌',info:'💡'};
+  t.textContent = (icons[type]?icons[type]+' ':'')+msg;
+  c.appendChild(t);
+  setTimeout(()=>{ t.classList.add('dying'); setTimeout(()=>t.remove(),220); }, 3400);
+}
+
+// ════════════════════════════════════════════
+// HOME
+// ════════════════════════════════════════════
+function renderHome() {
+  document.getElementById('h-decks').textContent = S.decks.length;
+  document.getElementById('h-lectures').textContent = S.lectures.length;
+  document.getElementById('h-resources').textContent = S.resources.length;
+  document.getElementById('h-streak').textContent = S.streak;
+
+  const quick = document.getElementById('home-quick');
+  quick.innerHTML = `
+    <div class="file-card" onclick="gv('study')" style="cursor:pointer;--dc:#7c3aed">
+      <div class="file-icon">📚</div>
+      <div class="file-name">Study Decks</div>
+      <div class="file-meta">${S.decks.length} deck${S.decks.length!==1?'s':''} available</div>
+      <div style="color:var(--accent2);font-weight:700;font-size:.85rem">View Decks →</div>
+    </div>
+    <div class="file-card" onclick="gv('lectures')" style="cursor:pointer;--dc:#06b6d4">
+      <div class="file-icon">🎓</div>
+      <div class="file-name">Lectures</div>
+      <div class="file-meta">${S.lectures.length} lecture${S.lectures.length!==1?'s':''} uploaded</div>
+      <div style="color:var(--accent2);font-weight:700;font-size:.85rem">Browse →</div>
+    </div>
+    <div class="file-card" onclick="gv('resources')" style="cursor:pointer;--dc:#10b981">
+      <div class="file-icon">📖</div>
+      <div class="file-name">Resources</div>
+      <div class="file-meta">${S.resources.length} resource${S.resources.length!==1?'s':''} available</div>
+      <div style="color:var(--accent2);font-weight:700;font-size:.85rem">Explore →</div>
+    </div>
+    <div class="file-card" onclick="gv('reports')" style="cursor:pointer;--dc:#f59e0b">
+      <div class="file-icon">📊</div>
+      <div class="file-name">Reports</div>
+      <div class="file-meta">Academic records & performance</div>
+      <div style="color:var(--accent2);font-weight:700;font-size:.85rem">View Reports →</div>
+    </div>
+  `;
+}
+
+// ════════════════════════════════════════════
+// STUDY DECKS
+// ════════════════════════════════════════════
+function renderStudyDecks() {
+  const el = document.getElementById('study-decks');
+  if (!S.decks.length) {
+    el.innerHTML = `<div style="grid-column:1/-1"><div class="card tc" style="padding:60px 24px">
+      <div style="font-size:2.8rem;margin-bottom:14px">📚</div>
+      <h3 class="mb8">No decks yet</h3>
+      <p class="mb20">Create your first study deck to get started</p>
+      <div class="flex jcc g8 wrap">
+        <button class="btn btn-outline" onclick="newStudyDeck()">＋ Create Deck</button>
+        <button class="btn btn-primary" onclick="importStudyCSV()">📥 Import CSV</button>
+      </div>
+    </div></div>`;
+    return;
+  }
+  el.innerHTML = S.decks.map(d=>`
+    <div class="file-card" style="--dc:#7c3aed">
+      <div class="file-name">${esc(d.name)}</div>
+      <div class="file-meta">${d.cards.length} card${d.cards.length!==1?'s':''}</div>
+      <div class="file-btns">
+        <button class="btn btn-primary btn-sm">📚 Study</button>
+        <button class="btn btn-outline btn-sm">⚡ Quiz</button>
+      </div>
+    </div>`
+  ).join('');
+}
+
+function newStudyDeck() { toast('Study deck creation feature coming soon','info'); }
+function importStudyCSV() { toast('CSV import for study decks coming soon','info'); }
+
+// ════════════════════════════════════════════
+// LECTURES
+// ════════════════════════════════════════════
+function renderLectures() {
+  const years = ['Year 1','Year 2','Year 3','Year 4'];
+  const yearsDiv = document.getElementById('lectures-years');
+  yearsDiv.innerHTML = years.map(y=>`
+    <button class="btn btn-outline" onclick="filterLecturesByYear('${y}')">
+      ${y} <span style="font-size:.7rem;margin-left:4px">(${S.lectures.filter(l=>l.year===y).length})</span>
+    </button>`).join('');
+
+  const el = document.getElementById('lectures-content');
+  if (!S.lectures.length) {
+    el.innerHTML = `<div class="card tc" style="padding:40px 24px">
+      <div style="font-size:2.4rem;margin-bottom:14px">🎓</div>
+      <h3 class="mb8">No lectures yet</h3>
+      <p>Upload your first lecture to get started</p>
+    </div>`;
+    return;
+  }
+
+  const grouped = {};
+  S.lectures.forEach(l=>{
+    if (!grouped[l.year]) grouped[l.year]={};
+    if (!grouped[l.year][l.subject]) grouped[l.year][l.subject]=[];
+    grouped[l.year][l.subject].push(l);
+  });
+
+  let html = '';
+  Object.entries(grouped).sort().forEach(([year,subjects])=>{
+    html += `<h3 style="margin-top:28px;margin-bottom:14px">${year}</h3>`;
+    Object.entries(subjects).forEach(([subject,lectures])=>{
+      html += `<div class="mb16"><div class="ts fb text-muted mb8">${esc(subject)}</div>
+        <div class="grid g2">`;
+      lectures.forEach(l=>{
+        html += `<div class="file-card" style="--dc:#06b6d4">
+          <div class="file-icon">📄</div>
+          <div class="file-name">${esc(l.title)}</div>
+          <div class="file-meta">Uploaded on ${new Date(l.uploaded).toLocaleDateString()}</div>
+          <div class="file-btns">
+            <button class="btn btn-primary btn-sm" onclick="downloadFile('${l.id}')">⬇️ Download</button>
+            <button class="btn btn-danger btn-sm btn-icon" onclick="deleteLecture('${l.id}')" title="Delete">🗑️</button>
+          </div>
+        </div>`;
+      });
+      html += `</div></div>`;
+    });
+  });
+  el.innerHTML = html;
+}
+
+function filterLecturesByYear(year) { toast('Filtering by '+year,'info'); }
+
+function openAddLectureModal() {
+  document.getElementById('lecture-modal').classList.add('active');
+  document.getElementById('lecture-year').value = '';
+  document.getElementById('lecture-subject').value = '';
+  document.getElementById('lecture-title').value = '';
+  document.getElementById('lecture-file').value = '';
+}
+
+function closeLectureModal() {
+  document.getElementById('lecture-modal').classList.remove('active');
+}
+
+function saveLecture() {
+  const year = document.getElementById('lecture-year').value.trim();
+  const subject = document.getElementById('lecture-subject').value.trim();
+  const title = document.getElementById('lecture-title').value.trim();
+  const file = document.getElementById('lecture-file');
+
+  if (!year||!subject||!title) { toast('Fill all fields','err'); return; }
+  if (!file.files[0]) { toast('Select a file','err'); return; }
+
+  S.lectures.push({
+    id: uid(),
+    year, subject, title,
+    filename: file.files[0].name,
+    size: file.files[0].size,
+    uploaded: now()
+  });
+  saveS();
+  closeLectureModal();
+  renderLectures();
+  toast('Lecture uploaded! 🎉','ok');
+}
+
+function deleteLecture(id) {
+  if (!confirm('Delete this lecture?')) return;
+  S.lectures = S.lectures.filter(l=>l.id!==id);
+  saveS();
+  renderLectures();
+  toast('Lecture deleted','err');
+}
+
+// ════════════════════════════════════════════
+// RESOURCES
+// ════════════════════════════════════════════
+function renderResources() {
+  const years = ['Year 1','Year 2','Year 3','Year 4'];
+  const yearsDiv = document.getElementById('resources-years');
+  yearsDiv.innerHTML = years.map(y=>`
+    <button class="btn btn-outline" onclick="filterResourcesByYear('${y}')">
+      ${y} <span style="font-size:.7rem;margin-left:4px">(${S.resources.filter(r=>r.year===y).length})</span>
+    </button>`).join('');
+
+  const el = document.getElementById('resources-content');
+  if (!S.resources.length) {
+    el.innerHTML = `<div class="card tc" style="padding:40px 24px">
+      <div style="font-size:2.4rem;margin-bottom:14px">📖</div>
+      <h3 class="mb8">No resources yet</h3>
+      <p>Add your first resource to get started</p>
+    </div>`;
+    return;
+  }
+
+  const grouped = {};
+  S.resources.forEach(r=>{
+    if (!grouped[r.year]) grouped[r.year]={};
+    if (!grouped[r.year][r.subject]) grouped[r.year][r.subject]=[];
+    grouped[r.year][r.subject].push(r);
+  });
+
+  let html = '';
+  Object.entries(grouped).sort().forEach(([year,subjects])=>{
+    html += `<h3 style="margin-top:28px;margin-bottom:14px">${year}</h3>`;
+    Object.entries(subjects).forEach(([subject,resources])=>{
+      html += `<div class="mb16"><div class="ts fb text-muted mb8">${esc(subject)}</div>
+        <div class="grid g2">`;
+      resources.forEach(r=>{
+        const typeEmoji = r.type==='Study Notes'?'📝':r.type==='MCQ File'?'❓':'📚';
+        html += `<div class="file-card" style="--dc:#10b981">
+          <div class="file-icon">${typeEmoji}</div>
+          <div class="file-name">${esc(r.title)}</div>
+          <div class="file-meta"><span class="chip ch-blue">${r.type}</span><br>Added on ${new Date(r.added).toLocaleDateString()}</div>
+          <div class="file-btns">
+            <button class="btn btn-primary btn-sm" onclick="downloadFile('${r.id}')">⬇️ Download</button>
+            <button class="btn btn-danger btn-sm btn-icon" onclick="deleteResource('${r.id}')" title="Delete">🗑️</button>
+          </div>
+        </div>`;
+      });
+      html += `</div></div>`;
+    });
+  });
+  el.innerHTML = html;
+}
+
+function filterResourcesByYear(year) { toast('Filtering by '+year,'info'); }
+
+function openAddResourceModal() {
+  document.getElementById('resource-modal').classList.add('active');
+  document.getElementById('resource-year').value = '';
+  document.getElementById('resource-type').value = '';
+  document.getElementById('resource-subject').value = '';
+  document.getElementById('resource-title').value = '';
+  document.getElementById('resource-file').value = '';
+}
+
+function closeResourceModal() {
+  document.getElementById('resource-modal').classList.remove('active');
+}
+
+function saveResource() {
+  const year = document.getElementById('resource-year').value.trim();
+  const type = document.getElementById('resource-type').value.trim();
+  const subject = document.getElementById('resource-subject').value.trim();
+  const title = document.getElementById('resource-title').value.trim();
+  const file = document.getElementById('resource-file');
+
+  if (!year||!type||!subject||!title) { toast('Fill all fields','err'); return; }
+  if (!file.files[0]) { toast('Select a file','err'); return; }
+
+  S.resources.push({
+    id: uid(),
+    year, type, subject, title,
+    filename: file.files[0].name,
+    size: file.files[0].size,
+    added: now()
+  });
+  saveS();
+  closeResourceModal();
+  renderResources();
+  toast('Resource added! 🎉','ok');
+}
+
+function deleteResource(id) {
+  if (!confirm('Delete this resource?')) return;
+  S.resources = S.resources.filter(r=>r.id!==id);
+  saveS();
+  renderResources();
+  toast('Resource deleted','err');
+}
+
+// ════════════════════════════════════════════
+// REPORTS
+// ════════════════════════════════════════════
+function renderReports() {
+  const years = ['Year 1','Year 2','Year 3','Year 4'];
+  const yearsDiv = document.getElementById('reports-years');
+  yearsDiv.innerHTML = years.map(y=>`
+    <button class="btn btn-outline" onclick="filterReportsByYear('${y}')">
+      ${y} <span style="font-size:.7rem;margin-left:4px">(${S.reports.filter(r=>r.year===y).length})</span>
+    </button>`).join('');
+
+  const el = document.getElementById('reports-content');
+  if (!S.reports.length) {
+    el.innerHTML = `<div class="card tc" style="padding:40px 24px">
+      <div style="font-size:2.4rem;margin-bottom:14px">📊</div>
+      <h3 class="mb8">No reports yet</h3>
+      <p>Import student scores to view reports</p>
+    </div>`;
+    return;
+  }
+
+  const grouped = {};
+  S.reports.forEach(r=>{
+    if (!grouped[r.year]) grouped[r.year]=[];
+    grouped[r.year].push(r);
+  });
+
+  let html = '';
+  Object.entries(grouped).sort().forEach(([year,reports])=>{
+    html += `<div class="mb32"><h3 style="margin-bottom:16px">${year}</h3>`;
+    html += `<div class="table-wrapper"><table class="report-table">
+      <thead><tr>
+        <th>Student Name</th>
+        <th>Subject</th>
+        <th>Score</th>
+        <th>Grade</th>
+        <th>Performance</th>
+      </tr></thead>
+      <tbody>`;
+
+    reports.forEach(r=>{
+      const score = parseFloat(r.score);
+      let gradeClass = 'grade-poor';
+      let gradeLetter = 'F';
+      if (score >= 90) { gradeClass='grade-excellent'; gradeLetter='A'; }
+      else if (score >= 80) { gradeClass='grade-good'; gradeLetter='B'; }
+      else if (score >= 70) { gradeClass='grade-average'; gradeLetter='C'; }
+
+      const perfBar = `<div style="width:100%;height:6px;background:var(--surf2);border-radius:3px;overflow:hidden">
+        <div style="height:100%;background:linear-gradient(90deg,${score>=90?'#10b981':score>=70?'#f59e0b':'#ef4444'},${score>=90?'#34d399':score>=70?'#fbbf24':'#f87171'});width:${score}%"></div>
+      </div>`;
+
+      html += `<tr>
+        <td><span style="font-weight:600">${esc(r.studentName)}</span></td>
+        <td>${esc(r.subject)}</td>
+        <td><span style="font-weight:700">${score.toFixed(1)}</span></td>
+        <td><span class="${gradeClass}">${gradeLetter}</span></td>
+        <td style="width:120px">${perfBar}</td>
+      </tr>`;
+    });
+    html += `</tbody></table></div></div>`;
+  });
+  el.innerHTML = html;
+}
+
+function filterReportsByYear(year) { toast('Filtering by '+year,'info'); }
+
+function openImportReportModal() {
+  document.getElementById('report-modal').classList.add('active');
+  document.getElementById('report-year').value = '';
+  document.getElementById('report-file').value = '';
+}
+
+function closeReportModal() {
+  document.getElementById('report-modal').classList.remove('active');
+}
+
+function saveReport() {
+  const year = document.getElementById('report-year').value.trim();
+  const file = document.getElementById('report-file');
+
+  if (!year) { toast('Select a year','err'); return; }
+  if (!file.files[0]) { toast('Select a file','err'); return; }
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const text = e.target.result;
+    const lines = text.split(/\r?\n/).filter(l=>l.trim());
+    const first = lines[0].toLowerCase();
+    const skip = (first.includes('student')||first.includes('subject')) ? 1 : 0;
+
+    let count = 0;
+    for (let i=skip; i<lines.length; i++) {
+      const parts = lines[i].split(',').map(p=>p.trim().replace(/^"|"$/g,''));
+      if (parts.length < 3) continue;
+      const [name,subject,score] = parts;
+      if (!name||!subject||!score) continue;
+      if (isNaN(parseFloat(score))) continue;
+      S.reports.push({
+        id:uid(),
+        year, studentName:name, subject, score: parseFloat(score),
+        imported: now()
+      });
+      count++;
+    }
+    if (count===0) { toast('No valid records found','err'); return; }
+    saveS();
+    closeReportModal();
+    renderReports();
+    toast(`Imported ${count} records! 🎉`,'ok');
+  };
+  reader.readAsText(file.files[0]);
+}
+
+// ════════════════════════════════════════════
+// ADMIN
+// ════════════════════════════════════════════
+function openAdminLogin() {
+  document.getElementById('admin-login-modal').classList.add('active');
+  document.getElementById('admin-password').value = '';
+  document.getElementById('admin-password').focus();
+}
+
+function closeAdminLogin() {
+  document.getElementById('admin-login-modal').classList.remove('active');
+}
+
+function loginAdmin() {
+  const pass = document.getElementById('admin-password').value;
+  if (pass !== ADMIN_PASS) {
+    toast('Incorrect password','err');
+    return;
+  }
+  S.adminLoggedIn = true;
+  saveS();
+  closeAdminLogin();
+  toast('Welcome to Admin Panel!','ok');
+  showAdminPanel();
+}
+
+function showAdminPanel() {
+  toast('Admin panel features coming soon','info');
+}
+
+// ════════════════════════════════════════════
+// FILE OPERATIONS
+// ════════════════════════════════════════════
+function downloadFile(id) {
+  const lecture = S.lectures.find(l=>l.id===id);
+  const resource = S.resources.find(r=>r.id===id);
+  const item = lecture || resource;
+  if (!item) return;
+  toast('Download started: '+item.filename,'info');
+}
+
+// ════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════
+(function init() {
+  loadS(); loadTheme(); checkStreak();
+
+  // Sample data
+  if (!S.lectures.length) {
+    S.lectures.push({
+      id:uid(), year:'Year 1', subject:'Pharmacology',
+      title:'Introduction to Drug Actions',
+      filename:'Lecture1.pdf', size:2500000, uploaded:now()
+    });
+    S.lectures.push({
+      id:uid(), year:'Year 2', subject:'Biochemistry',
+      title:'Metabolic Pathways', filename:'Lecture2.pdf',
+      size:3000000, uploaded:now()
+    });
+    saveS();
+  }
+
+  if (!S.resources.length) {
+    S.resources.push({
+      id:uid(), year:'Year 1', subject:'Pharmacology', type:'Study Notes',
+      title:'Chapter 1 - Drug Classification', filename:'Notes.pdf',
+      size:1500000, added:now()
+    });
+    saveS();
+  }
+
+  renderHome();
+})();
+</script>
+</body>
+</html>
